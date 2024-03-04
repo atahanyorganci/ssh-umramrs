@@ -1,0 +1,13 @@
+[package]
+name = "ssh-umramrs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.80"
+kdam = { version = "0.5.1", features = ["rayon"] }
+log = "0.4.21"
+rayon = "1.9.0"
+ssh2 = "0.9.4"
