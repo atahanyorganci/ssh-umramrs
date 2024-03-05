@@ -67,7 +67,7 @@ fn main() -> Result<()> {
 
     // Print the GPU info
     for (host, info) in infos {
-        println!("{}: {}", host, info.trim());
+        println!("{}:\n\t{}", host, info.trim().replace("\n", "\n\t"));
     }
     Ok(())
 }
