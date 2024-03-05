@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use kdam::TqdmParallelIterator;
+use indicatif::{ProgressBar, ProgressStyle};
 use rayon::prelude::*;
 use ssh2::Session;
 use std::io::Read;
@@ -51,19 +51,22 @@ fn get_gpu_info(host: &str) -> Result<String> {
 
 fn main() -> Result<()> {
     let machines = (40..80).collect::<Vec<_>>();
+    let pb = ProgressBar::new(machines.len() as u64);
+    pb.set_style(ProgressStyle::default_bar());
 
     let infos = machines
         .par_iter()
-        .tqdm()
         .filter_map(|i| {
             let host = format!("{}{}:{}", BASE_IP, i, PORT);
             let info_result = match get_gpu_info(&host) {
                 Ok(info) => Some((host, info)),
                 Err(_) => None,
             };
+            pb.inc(1);
             info_result
         })
         .collect::<Vec<_>>();
+    pb.finish_with_message("All hosts have been processed");
 
     // Print the GPU info
     for (host, info) in infos {

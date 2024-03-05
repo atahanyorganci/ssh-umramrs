@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.80"
-kdam = { version = "0.5.1", features = ["rayon"] }
+indicatif  = { version = "0.17.8", features = ["rayon"] }
 log = "0.4.21"
 rayon = "1.9.0"
 ssh2 = "0.9.4"
