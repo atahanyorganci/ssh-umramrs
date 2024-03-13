@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
 use rayon::prelude::*;
 use ssh2::Session;
 use std::io::Read;
@@ -50,27 +50,40 @@ fn get_gpu_info(host: &str) -> Result<String> {
 }
 
 fn main() -> Result<()> {
-    let machines = (40..80).collect::<Vec<_>>();
-    let pb = ProgressBar::new(machines.len() as u64);
-    pb.set_style(ProgressStyle::default_bar());
+    let machines = (0..256).collect::<Vec<_>>();
+    let mpb = MultiProgress::new();
+    let style = ProgressStyle::default_bar()
+        .template("{prefix:.bold.dim} {spinner:.green} {msg}").unwrap();
+
+    let main_pb = mpb.add(ProgressBar::new(machines.len() as u64));
+    let main_style = ProgressStyle::default_bar()
+        .template("{prefix:.bold} {bar:40.cyan/blue} {pos:>7}/{len:7}").unwrap();
+    main_pb.set_style(main_style);
+    main_pb.set_prefix("SSH Progress: ");
+
 
     let infos = machines
         .par_iter()
         .filter_map(|i| {
+            let pb = mpb.add(ProgressBar::new(1));
+            pb.set_style(style.clone());
             let host = format!("{}{}:{}", BASE_IP, i, PORT);
+            pb.set_message(format!("{host}: connecting..."));
             let info_result = match get_gpu_info(&host) {
                 Ok(info) => Some((host, info)),
                 Err(_) => None,
             };
             pb.inc(1);
+            pb.finish_and_clear();
+            main_pb.inc(1);
             info_result
         })
         .collect::<Vec<_>>();
-    pb.finish_with_message("All hosts have been processed");
+    main_pb.finish_with_message("All hosts have been processed");
 
     // Print the GPU info
     for (host, info) in infos {
-        println!("{}:\n\t{}", host, info.trim().replace("\n", "\n\t"));
+        println!("{}:\n\t{}", host, info.trim().replace('\n', "\n\t"));
     }
     Ok(())
 }
