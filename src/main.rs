@@ -53,14 +53,15 @@ fn main() -> Result<()> {
     let machines = (0..256).collect::<Vec<_>>();
     let mpb = MultiProgress::new();
     let style = ProgressStyle::default_bar()
-        .template("{prefix:.bold.dim} {spinner:.green} {msg}").unwrap();
+        .template("{prefix:.bold.dim} {msg}")
+        .unwrap();
 
     let main_pb = mpb.add(ProgressBar::new(machines.len() as u64));
     let main_style = ProgressStyle::default_bar()
-        .template("{prefix:.bold} {bar:40.cyan/blue} {pos:>7}/{len:7}").unwrap();
+        .template("{prefix:.bold} {bar:40.cyan/blue} {pos:>7}/{len:7}")
+        .unwrap();
     main_pb.set_style(main_style);
     main_pb.set_prefix("SSH Progress: ");
-
 
     let infos = machines
         .par_iter()
@@ -68,7 +69,7 @@ fn main() -> Result<()> {
             let pb = mpb.add(ProgressBar::new(1));
             pb.set_style(style.clone());
             let host = format!("{}{}:{}", BASE_IP, i, PORT);
-            pb.set_message(format!("{host}: connecting..."));
+            pb.set_message(format!("Connecting {host}"));
             let info_result = match get_gpu_info(&host) {
                 Ok(info) => Some((host, info)),
                 Err(_) => None,
