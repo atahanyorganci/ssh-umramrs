@@ -50,7 +50,10 @@ fn get_gpu_info(host: &str) -> Result<String> {
 }
 
 fn main() -> Result<()> {
-    let machines = (0..256).collect::<Vec<_>>();
+    let mut machines = (0..256).collect::<Vec<_>>();
+    let blacklist: Vec<i32> = vec![0, 43];
+    machines.retain(|&x| !blacklist.contains(&x));
+
     let mpb = MultiProgress::new();
     let style = ProgressStyle::default_bar()
         .template("{prefix:.bold.dim} {msg}")
