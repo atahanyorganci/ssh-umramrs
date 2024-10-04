@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.82"
+anyhow = "1.0.89"
 indicatif = { version = "0.17.8", features = ["rayon"] }
-log = "0.4.21"
+log = "0.4.22"
 rayon = "1.10.0"
 ssh2 = "0.9.4"
