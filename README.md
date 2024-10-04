@@ -4,11 +4,11 @@ The Bilkent University is home to [National Magnetic Resonance Research Center (
 
 ## Usage
 
-> [!INFO]
+> [!NOTE]
 > In order to connect these machines you need to have valid credentials, and you need to be connected to Bilkent network (either physically or via VPN).
 
 > [!WARNING]
-> Currently, you need to update the source code with your credentials. This is not ideal and will be updated in the future.
+> Currently, you need to update the [source code with your credentials](https://github.com/tunakasif/ssh-umramrs/blob/9a26b4e83264e85f0aec667576837a1fc3f45f5a/src/main.rs#L12-L13). This is not ideal and will be updated in the future.
 
 The program asynchronously tries to ssh into the machines with given IP addresses at their port 22, and get GPU configuration through `nvidia-smi` command (only NVIDIA GPUs are available on these machines). The output is in the format of `IP:Port` followed by the list of GPUs. The program can be run with the following command.
 
